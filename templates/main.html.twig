@@ -1,0 +1,86 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <script src="https://unpkg.com/libphonenumber-js@1.x/bundle/libphonenumber-max.js" async></script>
+    <form method="get" onsubmit="sendForm(event)" action="/">
+        <input type="text" name="phone" value="{{ phone }}"
+               placeholder="Номер телефона"
+               title="Укажите номер телефона в международном формате"
+               required/>
+        <input type="submit" value="Отправить"/>
+    </form>
+    <div id="response"></div>
+    <script type="text/javascript">
+        const responseContainer = document.querySelector('#response');
+        const urlParams = new URLSearchParams(window.location.search);
+
+        function sendForm(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            responseContainer.innerText = '';
+
+            const phoneField = e.target.querySelector('input[name=phone]');
+
+            urlParams.set('phone', phoneField.value);
+            history.pushState({}, '', `?${urlParams.toString()}`);
+
+            const preparedPhone = `+${phoneField.value.replace('+', '')}`;
+            const phoneNumber = libphonenumber.parsePhoneNumberFromString(preparedPhone);
+
+            if (!phoneNumber.isValid()) {
+                responseContainer.appendChild(createList(['Номер телефона указан неверно либо он не валиден'], true));
+                return;
+            }
+
+            const request = new XMLHttpRequest();
+            request.open('POST', e.target.getAttribute('action'));
+            request.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    const data = JSON.parse(this.responseText);
+                    if (data.messages.length === 0) {
+                        const region = data.info.region ? data.info.region : 'Не определён';
+                        const timezonePrefix = data.info.timezone > 0 ? '+' : '';
+                        let messages = [
+                            `Страна: ${data.info.country}`,
+                            `Регион: ${region}`,
+                            `Таймзона: UTC${timezonePrefix}${data.info.timezone}`
+                        ];
+                        responseContainer.appendChild(createList(messages));
+                        return;
+                    }
+
+                    responseContainer.appendChild(createList(data.messages));
+                }
+            };
+            request.send(new FormData(e.target));
+        }
+
+        function createList(messages, isError = false) {
+            const list = document.createElement('ul');
+            if (isError) {
+                list.classList.add('error');
+            }
+            messages.forEach(message => {
+                let li = document.createElement('li');
+                li.innerHTML = message;
+                list.appendChild(li);
+            });
+
+            return list;
+        }
+    </script>
+    <style>
+        input[type=text]:invalid {
+            border: 1px solid red;
+        }
+
+        input[type=text]:valid {
+            border: 1px solid green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+{% endblock %}

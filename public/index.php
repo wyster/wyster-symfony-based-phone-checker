@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__) . '/config/bootstrap.php';
 
+Dotenv\Dotenv::createMutable(__DIR__ . '/../')->load();
+
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
 
