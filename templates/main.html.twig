@@ -3,10 +3,16 @@
 {% block body %}
     <script src="https://unpkg.com/libphonenumber-js@1.x/bundle/libphonenumber-max.js" async></script>
     <form method="get" onsubmit="sendForm(event)" action="/">
-        <input type="text" name="phone" value="{{ phone }}"
-               placeholder="Номер телефона"
-               title="Укажите номер телефона в международном формате"
-               required/>
+        <input
+            type="text"
+            name="phone"
+            value="{{ phone }}"
+            placeholder="Номер телефона"
+            title="Укажите номер телефона в международном формате"
+            required
+            autofocus
+            minlength="3"
+        />
         <input type="submit" value="Отправить"/>
     </form>
     <div id="response"></div>
