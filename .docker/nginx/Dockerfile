@@ -6,5 +6,5 @@ ADD start.sh /start.sh
 RUN chmod 755 /start.sh
 CMD ["/start.sh"]
 
-ADD wait-for.sh /wait-for.sh
+ADD ./wait-for.sh /wait-for.sh
 RUN chmod 755 /wait-for.sh

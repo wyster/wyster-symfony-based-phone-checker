@@ -22,6 +22,9 @@ RUN docker-php-ext-install zip
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+ADD ./wait-for.sh /wait-for.sh
+RUN chmod 755 /wait-for.sh
+
 ADD ./start.sh /start.sh
 RUN chmod +x /start.sh
 CMD /start.sh
