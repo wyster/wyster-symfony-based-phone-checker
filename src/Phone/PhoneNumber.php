@@ -16,7 +16,7 @@ final class PhoneNumber implements PhoneNumberInterface
         if (!$this->phoneIsValid($phone)) {
             throw new InvalidArgumentException('Invalid phone');
         }
-        $this->phone = $phone;
+        $this->phone = preg_replace('/\D+/', '', $phone);
     }
 
     public function getPhone(): string
