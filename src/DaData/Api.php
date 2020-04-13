@@ -2,6 +2,7 @@
 
 namespace App\DaData;
 
+use App\Phone\PhoneNumberInterface;
 use Exception;
 use Laminas\Hydrator\ClassMethodsHydrator;
 use Psr\Http\Client\ClientInterface;
@@ -24,14 +25,14 @@ final class Api implements ApiInterface
         $this->streamFactory = $streamFactory;
     }
 
-    public function getPhoneInfo(string $phone): PhoneInterface
+    public function getPhoneInfo(PhoneNumberInterface $phoneNumber): PhoneInterface
     {
         $request = $this->httpRequestFactory->createRequest('POST', self::URL);
 
         $request = $request->withHeader('Content-Type', 'application/json')
             ->withHeader('Authorization', sprintf('Token %s', getenv('DADATA_API_KEY')))
             ->withHeader('X-Secret', getenv('DADATA_SECRET_KEY'));
-        $bodyStream = $this->streamFactory->createStream(json_encode([$phone], JSON_THROW_ON_ERROR));
+        $bodyStream = $this->streamFactory->createStream(json_encode([$phoneNumber->getPhone()], JSON_THROW_ON_ERROR));
         $request = $request->withBody($bodyStream);
 
         $response = $this->httpClient->sendRequest($request);
@@ -43,9 +44,11 @@ final class Api implements ApiInterface
         $data = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR)[0];
 
         $data['timezone'] = (int)str_replace('UTC', '', $data['timezone']);
+        unset($data['phone']);
 
         $hydrator = new ClassMethodsHydrator();
         $entity = new Phone();
+        $entity->setPhone($phoneNumber);
         $hydrator->hydrate($data, $entity);
 
         return $entity;

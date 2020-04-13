@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Phone\PhoneNumberInterface;
+
 interface PhoneInterface
 {
     public function getCountry(): string;
@@ -9,4 +11,6 @@ interface PhoneInterface
     public function getRegion(): ?string;
 
     public function getTimezone(): int;
+
+    public function getPhone(): PhoneNumberInterface;
 }

@@ -3,8 +3,9 @@
 namespace App\DaData;
 
 use App\Entity\PhoneInterface;
+use App\Phone\PhoneNumberInterface;
 
 interface ApiInterface
 {
-    public function getPhoneInfo(string $phone): PhoneInterface;
+    public function getPhoneInfo(PhoneNumberInterface $phoneNumber): PhoneInterface;
 }

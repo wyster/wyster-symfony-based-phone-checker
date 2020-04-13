@@ -1,3 +1,5 @@
+[![Codecov branch](https://img.shields.io/codecov/c/github/wyster/symfony-based-phone-checker/master)](https://codecov.io/gh/wyster/symfony-based-phone-checker)
+
 # Запуск проекта
 
 Проект можно запустить через docker-compose, для этого нужно

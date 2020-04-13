@@ -3,12 +3,14 @@
 namespace App\DaData;
 
 use App\Entity\PhoneInterface;
+use App\Phone\PhoneNumberInterface;
 
 final class Phone implements PhoneInterface
 {
     private string $country;
     private ?string $region;
     private int $timezone;
+    private PhoneNumberInterface $phone;
 
     public function getCountry(): string
     {
@@ -38,5 +40,15 @@ final class Phone implements PhoneInterface
     public function setTimezone(int $timezone): void
     {
         $this->timezone = $timezone;
+    }
+
+    public function getPhone(): PhoneNumberInterface
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(PhoneNumberInterface $phone): void
+    {
+        $this->phone = $phone;
     }
 }

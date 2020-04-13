@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Phone;
+use App\Phone\PhoneNumberInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,11 +20,11 @@ class PhoneRepository extends ServiceEntityRepository
         parent::__construct($registry, Phone::class);
     }
 
-    public function findPhone(string $value): ?Phone
+    public function findPhone(PhoneNumberInterface $phoneNumber): ?Phone
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.phone = :val')
-            ->setParameter('val', $value)
+            ->setParameter('val', $phoneNumber->getPhone())
             ->getQuery()
             ->getOneOrNullResult();
     }
